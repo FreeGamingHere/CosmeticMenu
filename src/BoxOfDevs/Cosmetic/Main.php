@@ -1,6 +1,6 @@
 <?php
-namespace BoxOfDevs\Cosmetic;
 
+namespace BoxOfDevs\Cosmetic;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
@@ -8,16 +8,19 @@ use pocketmine\network\mcpe\protocol\UseItemPacket;
 use pocketmine\math\Vector3;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\player\PlayerItemHeldEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\level\particle\RedstoneParticle;
 use pocketmine\utils\Config;
 use pocketmine\level\Level;
+use pocketmine\scheduler\PluginTask;
 use pocketmine\level\particle\HugeExplodeParticle;
 use pocketmine\level\particle\WaterParticle;
 use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\entity\Arrow;
+use pocketmine\entity\projectile\EnderPearl;
 use pocketmine\utils\Random;
 use pocketmine\entity\Snowball;
 use pocketmine\nbt\tag\FloatTag;
@@ -33,34 +36,46 @@ use pocketmine\network\mcpe\protocol\AddItemEntityPacket;
 use pocketmine\event\player\PlayerRespawnEvent;
 
 class Main extends PluginBase implements Listener {
+    //Particles
+    public $water = array("WaterParticles");
+    public $fire = array("FireParticles");
+    public $heart = array("HeartParticles");
+    public $smoke = array("SmokeParticles");
     //EnderPearl
     /**@var Item*/
     private $item;
     /**@var int*/
     protected $damage = 0;
-
     public function onEnable() {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getLogger()->info("Β§aCosmeticMenu by BoxOfDevs loaded ;D!");
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new Particles($this), 5);
+        $this->getLogger()->info("§aCosmeticMenu by BoxOfDevs edited by FreeGamingHere enabled!");
     }
-
+    public function onJoin(PlayerJoinEvent $event) {
+        $player = $event->getPlayer();
+        $inv = $player->getInventory();
+        $inv->clearAll();
+        $item = Item::get(347, 0, 1);
+        $inv->setItem(0, $item);
+    }
     public function playerSpawnEvent(PlayerRespawnEvent $ev) {
         $item = new Item(347, 1, 1);
         $ev->getPlayer()->getInventory()->addItem($item);
     }
-
     public function onInteract(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
-        if($player instanceof Player){
+        $name = $player->getName();
+        if ($player instanceof Player) {
             $block = $player->getLevel()->getBlock($player->floor()->subtract(0, 1));
             $item = $player->getInventory()->getItemInHand();
-            $pos = new Vector3($player->getX() + 1, $player->getY() + 1, $player->getZ());
-            $particle = new RedstoneParticle($pos, 5);
-            $particle2 = new HugeExplodeParticle($pos, 5);
-            $particle3 = new WaterParticle($pos, 12);
-            $particle4 = new AngryVillagerParticle($pos, 5);
             $level = $player->getLevel();
             if ($item->getId() == 341) {
+                $block = $event->getBlock();
+                $pos = new Vector3($block->getX(), $block->getY() + 2, $block->getZ());
+                $particle = new RedstoneParticle($pos, 5);
+                $particle2 = new HugeExplodeParticle($pos, 5);
+                $particle3 = new WaterParticle($pos, 50);
+                $particle4 = new AngryVillagerParticle($pos, 15);
                 $level->addParticle($particle);
                 $level->addParticle($particle2);
                 $level->addParticle($particle3);
@@ -68,79 +83,92 @@ class Main extends PluginBase implements Listener {
             }
             //Leaper
             if ($block->getId() === 0) {
-                $player->sendTIP("Β§cPlease wait");
+                $player->sendPopup("§cPlease wait");
                 return true;
             }
             if ($item->getId() == 258) {
-                $yaw = $player->yaw;
-                if (0 <= $yaw and $yaw < 22.5) {
-                    $player->knockBack($player, 0, 0, 1, 1.5);
-                } elseif (22.5 <= $yaw and $yaw < 67.5) {
-                    $player->knockBack($player, 0, -1, 1, 1.5);
-                } elseif (67.5 <= $yaw and $yaw < 112.5) {
-                    $player->knockBack($player, 0, -1, 0, 1.5);
-                } elseif (112.5 <= $yaw and $yaw < 157.5) {
-                    $player->knockBack($player, 0, -1, -1, 1.5);
-                } elseif (157.5 <= $yaw and $yaw < 202.5) {
-                    $player->knockBack($player, 0, 0, -1, 1.5);
-                } elseif (202.5 <= $yaw and $yaw < 247.5) {
-                    $player->knockBack($player, 0, 1, -1, 1.5);
-                } elseif (247.5 <= $yaw and $yaw < 292.5) {
-                    $player->knockBack($player, 0, 1, 0, 1.5);
-                } elseif (292.5 <= $yaw and $yaw < 337.5) {
-                    $player->knockBack($player, 0, 1, 1, 1.5);
-                } elseif (337.5 <= $yaw and $yaw < 360.0) {
-                    $player->knockBack($player, 0, 0, 1, 1.5);
-                }
-                $player->sendPopup("Β§aUsed Leap!");
+                $player->setMotion(new Vector3(0, 5, 0));
+                $player->sendPopup("§aLeaped!");
             }
             //Egg Launcher
             if ($item->getId() == 329) {
                 $nbt = new CompoundTag("", ["Pos" => new ListTag("Pos", [new DoubleTag("", $player->x), new DoubleTag("", $player->y + $player->getEyeHeight()), new DoubleTag("", $player->z) ]), "Motion" => new ListTag("Motion", [new DoubleTag("", -\sin($player->yaw / 180 * M_PI) * \cos($player->pitch / 180 * M_PI)), new DoubleTag("", -\sin($player->pitch / 180 * M_PI)), new DoubleTag("", \cos($player->yaw / 180 * M_PI) * \cos($player->pitch / 180 * M_PI)) ]), "Rotation" => new ListTag("Rotation", [new FloatTag("", $player->yaw), new FloatTag("", $player->pitch) ]) ]);
                 $f = 1.0;
-                $snowball = Entity::createEntity("Egg", $player->chunk, $nbt, $player);
+                $snowball = Entity::createEntity("Egg", $player->getLevel(), $nbt, $player);
                 $snowball->setMotion($snowball->getMotion()->multiply($f));
                 $snowball->spawnToAll();
             } // EnderPearl
             if ($item->getId() == 332) {
                 $nbt = new CompoundTag("", ["Pos" => new ListTag("Pos", [new DoubleTag("", $player->x), new DoubleTag("", $player->y + $player->getEyeHeight()), new DoubleTag("", $player->z) ]), "Motion" => new ListTag("Motion", [new DoubleTag("", -\sin($player->yaw / 180 * M_PI) * \cos($player->pitch / 180 * M_PI)), new DoubleTag("", -\sin($player->pitch / 180 * M_PI)), new DoubleTag("", \cos($player->yaw / 180 * M_PI) * \cos($player->pitch / 180 * M_PI)) ]), "Rotation" => new ListTag("Rotation", [new FloatTag("", $player->yaw), new FloatTag("", $player->pitch) ]) ]);
                 $f = 1.0;
-                $snowball = Entity::createEntity("Snowball", $player->chunk, $nbt, $player);
+                $snowball = Entity::createEntity("Snowball", $player->getLevel(), $nbt, $player);
                 $snowball->setMotion($snowball->getMotion()->multiply($f));
                 $snowball->spawnToAll();
             }
             if ($item->getId() === 351) { // Dye
                 switch ($item->getDamage()) {
                     case 4: // lapis: water
-                        $particle = new \pocketmine\level\particle\BubbleParticle(new Vector3($player->x, $player->y + 2, $player->z));
-                        $random = new Random((int)(microtime(true) * 1000) + mt_rand());
-                        for ($i = 0;$i < 90;++$i) {
-                            $particle->setComponents($player->x - 2 + $random->nextSignedFloat() * $player->x + 2, $player->y - 0.5 + $random->nextSignedFloat() * $player->y + 1.5, $player->z - 2 + $random->nextSignedFloat() * $player->z + 2);
-                            $level->addParticle($particle);
+                        if (!in_array($name, $this->water)) {
+                            $this->water[] = $name;
+                            if(in_array($name, $this->fire)) {
+                                unset($this->fire[array_search($name, $this->fire)]);
+                            } elseif(in_array($name, $this->heart)) {
+                                unset($this->heart[array_search($name, $this->heart)]);
+                            } elseif(in_array($name, $this->smoke)) {
+                                unset($this->smoke[array_search($name, $this->smoke)]);
+                            }
+                            $player->sendMessage("§l§aYou have enabled your §6Water §aParticles");
+                        } else {
+                            unset($this->water[array_search($name, $this->water)]);
+                            $player->sendMessage("§l§cYou have disabled your §6Water §cParticles");
                         }
                     break;
                     case 14: // orange: fire
-                        $particle = new \pocketmine\level\particle\EntityFlameParticle(new Vector3($player->x, $player->y + 2, $player->z));
-                        $random = new Random((int)(microtime(true) * 1000) + mt_rand());
-                        for ($i = 0;$i < 90;++$i) {
-                            $particle->setComponents($player->x - 2 + $random->nextSignedFloat() * $player->x + 2, $player->y - 0.5 + $random->nextSignedFloat() * $player->y + 1.5, $player->z - 2 + $random->nextSignedFloat() * $player->z + 2);
-                            $level->addParticle($particle);
+                        if (!in_array($name, $this->fire)) {
+                            $this->fire[] = $name;
+                            if(in_array($name, $this->water)) {
+                                unset($this->water[array_search($name, $this->water)]);
+                            } elseif(in_array($name, $this->heart)) {
+                                unset($this->heart[array_search($name, $this->heart)]);
+                            } elseif(in_array($name, $this->smoke)) {
+                                unset($this->smoke[array_search($name, $this->smoke)]);
+                            }
+                            $player->sendMessage("§l§aYou have enabled your §6Fire §aParticles");
+                        } else {
+                            unset($this->fire[array_search($name, $this->fire)]);
+                            $player->sendMessage("§l§cYou have disabled your §6Fire §cParticles");
                         }
                     break;
                     case 1: // red: heart
-                        $particle = new \pocketmine\level\particle\HeartParticle(new Vector3($player->x, $player->y + 2, $player->z));
-                        $random = new Random((int)(microtime(true) * 1000) + mt_rand());
-                        for ($i = 0;$i < 90;++$i) {
-                            $particle->setComponents($player->x - 2 + $random->nextSignedFloat() * $player->x + 2, $player->y - 0.5 + $random->nextSignedFloat() * $player->y + 1.5, $player->z - 2 + $random->nextSignedFloat() * $player->z + 2);
-                            $level->addParticle($particle);
+                        if (!in_array($name, $this->heart)) {
+                            $this->heart[] = $name;
+                            if(in_array($name, $this->water)) {
+                                unset($this->water[array_search($name, $this->water)]);
+                            } elseif(in_array($name, $this->fire)) {
+                                unset($this->fire[array_search($name, $this->fire)]);
+                            } elseif(in_array($name, $this->smoke)) {
+                                unset($this->smoke[array_search($name, $this->smoke)]);
+                            }
+                            $player->sendMessage("§l§aYou have enabled your §6Heart §aParticles");
+                        } else {
+                            unset($this->heart[array_search($name, $this->heart)]);
+                            $player->sendMessage("§l§cYou have disabled your §6Heart §cParticles");
                         }
                     break;
                     case 15: // white: smoke
-                        $particle = new HugeExplodeParticle(new Vector3($player->x, $player->y + 2, $player->z), 2);
-                        $random = new Random((int)(microtime(true) * 1000) + mt_rand());
-                        for ($i = 0;$i < 90;++$i) {
-                            $particle->setComponents($player->x - 2 + $random->nextSignedFloat() * $player->x + 2, $player->y - 0.5 + $random->nextSignedFloat() * $player->y + 1.5, $player->z - 2 + $random->nextSignedFloat() * $player->z + 2);
-                            $level->addParticle($particle);
+                        if (!in_array($name, $this->smoke)) {
+                            $this->smoke[] = $name;
+                            if(in_array($name, $this->water)) {
+                                unset($this->water[array_search($name, $this->water)]);
+                            } elseif(in_array($name, $this->fire)) {
+                                unset($this->fire[array_search($name, $this->fire)]);
+                            } elseif(in_array($name, $this->heart)) {
+                                unset($this->heart[array_search($name, $this->heart)]);
+                            }
+                            $player->sendMessage("§l§aYou have enabled your §6Smoke §aParticles");
+                        } else {
+                            unset($this->smoke[array_search($name, $this->smoke)]);
+                            $player->sendMessage("§l§cYou have disabled your §6Smoke §cParticles");
                         }
                     break;
                 }
@@ -150,7 +178,7 @@ class Main extends PluginBase implements Listener {
                 foreach ($player->getInventory()->getContents() as $item) {
                     $nbt = new CompoundTag("", ["Pos" => new ListTag("Pos", [new DoubleTag("", $player->x), new DoubleTag("", $player->y + $player->getEyeHeight()), new DoubleTag("", $player->z) ]), "Motion" => new ListTag("Motion", [new DoubleTag("", -\sin($player->yaw / 180 * M_PI) * \cos($player->pitch / 180 * M_PI)), new DoubleTag("", -\sin($player->pitch / 180 * M_PI)), new DoubleTag("", \cos($player->yaw / 180 * M_PI) * \cos($player->pitch / 180 * M_PI)) ]), "Rotation" => new ListTag("Rotation", [new FloatTag("", $player->yaw), new FloatTag("", $player->pitch) ]) ]);
                     $f = 3.0;
-                    $snowball = Entity::createEntity("PrimedTNT", $player->chunk, $nbt, $player);
+                    $snowball = Entity::createEntity("PrimedTNT", $player->getLevel(), $nbt, $player);
                     $snowball->setMotion($snowball->getMotion()->multiply($f));
                     $snowball->spawnToAll();
                 }
@@ -256,7 +284,7 @@ class Main extends PluginBase implements Listener {
                 $player->getInventory()->addItem(Item::get(ITEM::SADDLE));
                 $player->getInventory()->addItem(Item::get(ITEM::SLIMEBALL));
                 $player->getInventory()->addItem(Item::get(ITEM::IRON_AXE));
-                $player->getInventory()->addItem(Item::get(ITEM::SNOWBALL, 0, 1));
+                $player->getInventory()->addItem(Item::get(ITEM::ENDER_PEARL, 0, 1));
                 $player->getInventory()->addItem(Item::get(ITEM::BONE));
             }
             //Hats
@@ -276,29 +304,29 @@ class Main extends PluginBase implements Listener {
             //SeedsHat
             if ($item->getId() == 295) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::SEEDS));
-                $player->sendPopup("Β§lΒ§aPlop!");
+                $player->sendPopup("§l§aPlop!");
             }
             //SteakHat
             if ($item->getId() == 364) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::STEAK));
-                $player->sendPopup("Β§lΒ§aPlop!");
+                $player->sendPopup("§l§aPlop!");
             }
             //CookieHat
             if ($item->getId() == 357) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::COOKIE));
-                $player->sendPopup("Β§lΒ§aPlop!");
+                $player->sendPopup("§l§aPlop!");
             }
             //PaperHat
             if ($item->getId() == 339) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::PAPER));
-                $player->sendPopup("Β§lΒ§aPlop!");
+                $player->sendPopup("§l§aPlop!");
             }
             //BucketHat
             if ($item->getId() == 325) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::BUCKET));
-                $player->sendPopup("Β§lΒ§aPlop!");
+                $player->sendPopup("§l§aPlop!");
             }
-            //Partical
+            //Particle
             if ($item->getid() == 348) {
                 $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
                 $player->getInventory()->removeItem(Item::get(ITEM::MINECART));
@@ -315,7 +343,7 @@ class Main extends PluginBase implements Listener {
             if ($item->getId() == 355) {
                 $player->getInventory()->removeItem(Item::get(ITEM::BED));
                 $player->getInventory()->removeItem(Item::get(ITEM::SLIMEBALL));
-                $player->getInventory()->removeItem(Item::get(ITEM::SNOWBALL, 0, 10000));
+                $player->getInventory()->removeItem(Item::get(ITEM::ENDER_PEARL, 0, 10000));
                 $player->getInventory()->removeItem(Item::get(ITEM::IRON_AXE));
                 $player->getInventory()->removeItem(Item::get(ITEM::MINECART));
                 $player->getInventory()->removeItem(Item::get(ITEM::PAINTING));
@@ -332,143 +360,166 @@ class Main extends PluginBase implements Listener {
                 $player->getInventory()->removeItem(Item::get(ITEM::DYE, 14, 1));
                 $player->getInventory()->removeItem(Item::get(ITEM::BONE));
                 $player->getInventory()->addItem(Item::get(ITEM::CLOCK));
-                $player->getInventory()->setHelmet(Item::get(ITEM::AIR));
-                $player->getInventory()->setChestplate(Item::get(ITEM::AIR));
-                $player->getInventory()->setLeggings(Item::get(ITEM::AIR));
-                $player->getInventory()->setBoots(Item::get(ITEM::AIR));
+                $player->getArmorInventory()->setHelmet(Item::get(ITEM::AIR));
+                $player->getArmorInventory()->setChestplate(Item::get(ITEM::AIR));
+                $player->getArmorInventory()->setLeggings(Item::get(ITEM::AIR));
+                $player->getArmorInventory()->setBoots(Item::get(ITEM::AIR));
             }
         }
     }
-
     public function onPlayerItemHeldEvent(PlayerItemHeldEvent $e) {
         $i = $e->getItem();
         $p = $e->getPlayer();
         //ItemNames
         if ($i->getId() == 347) {
-            $p->sendPopup("Β§lΒ§dCosmeticΒ§eMenu");
+            $p->sendPopup("§l§dCosmetic§eMenu");
         }
         //Gadgets
         if ($i->getId() == 328) {
-            $p->sendPopup("Β§lΒ§6Gadgets");
+            $p->sendPopup("§l§6Gadgets");
         }
         //EggLauncher
         if ($i->getId() == 329) {
-            $p->sendPopup("Β§lΒ§6EggΒ§bLauncher");
+            $p->sendPopup("§l§6Egg§bLauncher");
         }
         //EnderPearl
-        if ($i->getId() == 332) {
-            $p->sendPopup("Β§lΒ§dEnderPearl");
+        if ($i->getId() == 368) {
+            $p->sendPopup("§l§dEnderPearl");
         }
         //BunnyHop
         if ($i->getId() == 258) {
-            $p->sendPopup("Β§lΒ§bBunnyHop");
+            $p->sendPopup("§l§bBunnyHop");
         }
         //FlyTime
         if ($i->getId() == 288) {
-            $p->sendPopup("Β§lΒ§6FlyTime");
+            $p->sendPopup("§l§6FlyTime");
         }
         //ParticleBomb
         if ($i->getId() == 341) {
-            $p->sendPopup("Β§lΒ§dParticleΒ§eBomb");
+            $p->sendPopup("§l§dParticle§eBomb");
         }
-        //Armours
+        //Armors
         if ($i->getId() == 310) {
-            $p->sendPopup("Β§lΒ§dArmours");
+            $p->sendPopup("§l§dArmors");
         }
         //LightningStick
         if ($i->getId() == 352) {
-            $p->sendPopup("Β§lΒ§6LightingΒ§aStick");
+            $p->sendPopup("§l§6Lighting§aStick");
         }
         //Partical
         if ($i->getId() == 348) {
-            $p->sendPopup("Β§lΒ§bParticals");
+            $p->sendPopup("§l§bParticles");
         }
         //Water
         if ($i->getId() == 351 && $i->getDamage() == 4) {
-            $p->sendPopup("Β§lΒ§6Water");
+            $p->sendPopup("§l§6Water");
         }
         //Fire
         if ($i->getId() == 351 && $i->getDamage() == 14) {
-            $p->sendPopup("Β§lΒ§6Fire");
+            $p->sendPopup("§l§6Fire");
         }
         //Hearts
         if ($i->getId() == 351 && $i->getDamage() == 1) {
-            $p->sendPopup("Β§lΒ§6Hearts");
+            $p->sendPopup("§l§6Hearts");
         }
         //Smoke
         if ($i->getId() == 351 && $i->getDamage() == 15) {
-            $p->sendPopup("Β§lΒ§6Smoke");
+            $p->sendPopup("§l§6Smoke");
         }
         //Back
         if ($i->getId() == 355) {
-            $p->sendPopup("Β§lΒ§7Back...");
+            $p->sendPopup("§l§7Back...");
         }
         //TNTLauncher
         if ($i->getId() == 352) {
-            $p->sendPopup("Β§lΒ§cTNTΒ§aLauncher");
+            $p->sendPopup("§l§cTNT§aLauncher");
         }
-        //Diamond Armour
+        //Diamond Armor
         if ($i->getId() == 264) {
-            $p->sendPopup("Β§lΒ§bDiamond Β§dAmour");
+            $p->sendPopup("§l§bDiamond §dArmor");
         }
-        //Iron Armour
+        //Iron Armor
         if ($i->getId() == 265) {
-            $p->sendPopup("Β§lΒ§fIron Β§dAmour");
+            $p->sendPopup("§l§fIron §dArmor");
         }
-        //Chain Armour
+        //Chain Armor
         if ($i->getId() == 289) {
-            $p->sendPopup("Β§lΒ§7Chain Β§dAmour");
+            $p->sendPopup("§l§7Chain §dArmor");
         }
-        //Gold Armour
+        //Gold Armor
         if ($i->getId() == 266) {
-            $p->sendPopup("Β§lΒ§6Gold Β§dAmour");
+            $p->sendPopup("§l§6Gold §dArmor");
         }
-        //Leather Armour
+        //Leather Armor
         if ($i->getId() == 334) {
-            $p->sendPopup("Β§lΒ§4Leather Β§dAmour");
+            $p->sendPopup("§l§4Leather §dArmor");
         }
         //SeedsHat
         if ($i->getId() == 295) {
-            $p->sendPopup("Β§lΒ§3Seeds Β§eHat");
+            $p->sendPopup("§l§3Seeds §eHat");
         }
         //SteakHat
         if ($i->getId() == 364) {
-            $p->sendPopup("Β§lΒ§4Steak Β§eHat");
+            $p->sendPopup("§l§4Steak §eHat");
         }
         //CookieHat
         if ($i->getId() == 357) {
-            $p->sendPopup("Β§lΒ§6Cookie Β§eHat");
+            $p->sendPopup("§l§6Cookie §eHat");
         }
         //PaperHat
         if ($i->getId() == 339) {
-            $p->sendPopup("Β§lΒ§fPaper Β§eHat");
+            $p->sendPopup("§l§fPaper §eHat");
         }
         //BucketHat
         if ($i->getId() == 325) {
-            $p->sendPopup("Β§lΒ§7Bucket Β§eHat");
+            $p->sendPopup("§l§7Bucket §eHat");
         }
         //Hats
         if ($i->getId() == 321) {
-            $p->sendPopup("Β§lΒ§eHat");
+            $p->sendPopup("§l§eHat");
         }
     }
-
     public function onProjectileHit(ProjectileHitEvent $event) {
         $snowball = $event->getEntity();
         $loc = $snowball->getLocation();
-        if ($snowball->shootingEntity instanceof Player and $snowball instanceof Snowball) { // if the player is online
-            $snowball->shootingEntity->teleport(new Vector3($loc->x, $loc->y, $loc->z), $loc->yaw, $loc->pitch);
-            $snowball->shootingEntity->getInventory()->addItem(Item::get(ITEM::SNOWBALL, 0, 1));
+        if ($snowball->getOwningEntity() instanceof Player and $snowball instanceof EnderPearl) { // If the player is online
+//            $snowball->getOwningEntity()->teleport(new Vector3($loc->x, $loc->y, $loc->z), $loc->yaw, $loc->pitch);
+            $snowball->getOwningEntity()->getInventory()->addItem(Item::get(ITEM::ENDER_PEARL, 0, 1));
         }
     }
-
     /**
      * FlyPower
      * LightingStick
      * Particals-Emerald is asigned on this
      */
-
     public function ExplosionPrimeEvent(ExplosionPrimeEvent $p) {
         $p->setBlockBreaking(false);
+    }
+}
+
+class Particles extends PluginTask {
+
+    public function __construct(Main $plugin) {
+        parent::__construct($plugin);
+        $this->plugin = $plugin;
+    }
+    public function onRun($tick) {
+        foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
+            $name = $player->getName();
+            $level = $player->getLevel();
+            if (in_array($name, $this->plugin->water)) {
+                $particle = new \pocketmine\level\particle\WaterParticle(new Vector3($player->x, $player->y + 2.5, $player->z), 5);
+                $level->addParticle($particle);
+            } elseif (in_array($name, $this->plugin->fire)) {
+                $particle = new \pocketmine\level\particle\EntityFlameParticle(new Vector3($player->x, $player->y + 2.5, $player->z));
+                $level->addParticle($particle);
+            } elseif (in_array($name, $this->plugin->heart)) {
+                $particle = new \pocketmine\level\particle\HeartParticle(new Vector3($player->x, $player->y + 2.5, $player->z), 5);
+                $level->addParticle($particle);
+            } elseif (in_array($name, $this->plugin->smoke)) {
+                $particle = new HugeExplodeParticle(new Vector3($player->x, $player->y + 2.5, $player->z));
+                $level->addParticle($particle);
+            }
+        }
     }
 }
