@@ -15,7 +15,7 @@ use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\level\particle\RedstoneParticle;
 use pocketmine\utils\Config;
 use pocketmine\level\Level;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task as PluginTask;
 use pocketmine\level\particle\HugeExplodeParticle;
 use pocketmine\level\particle\WaterParticle;
 use pocketmine\level\particle\AngryVillagerParticle;
@@ -48,7 +48,7 @@ class Main extends PluginBase implements Listener {
     protected $damage = 0;
     public function onEnable() {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new Particles($this), 5);
+        $this->getScheduler()->scheduleRepeatingTask(new Particles($this), 5);
         $this->getLogger()->info("§aCosmeticMenu by BoxOfDevs edited by FreeGamingHere enabled!");
     }
     public function onJoin(PlayerJoinEvent $event) {
