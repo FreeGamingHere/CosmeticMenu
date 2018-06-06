@@ -41,7 +41,7 @@ class Main extends PluginBase implements Listener {
 
     public function onEnable() {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getLogger()->info("§aCosmeticMenu by BoxOfDevs loaded ;D!");
+        $this->getLogger()->info("Β§aCosmeticMenu by BoxOfDevs loaded ;D!");
     }
 
     public function playerSpawnEvent(PlayerRespawnEvent $ev) {
@@ -68,7 +68,7 @@ class Main extends PluginBase implements Listener {
             }
             //Leaper
             if ($block->getId() === 0) {
-                $player->sendTIP("§cPlease wait");
+                $player->sendTIP("Β§cPlease wait");
                 return true;
             }
             if ($item->getId() == 258) {
@@ -92,7 +92,7 @@ class Main extends PluginBase implements Listener {
                 } elseif (337.5 <= $yaw and $yaw < 360.0) {
                     $player->knockBack($player, 0, 0, 1, 1.5);
                 }
-                $player->sendPopup("§aUsed Leap!");
+                $player->sendPopup("Β§aUsed Leap!");
             }
             //Egg Launcher
             if ($item->getId() == 329) {
@@ -276,27 +276,27 @@ class Main extends PluginBase implements Listener {
             //SeedsHat
             if ($item->getId() == 295) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::SEEDS));
-                $player->sendPopup("§l§aPlop!");
+                $player->sendPopup("Β§lΒ§aPlop!");
             }
             //SteakHat
             if ($item->getId() == 364) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::STEAK));
-                $player->sendPopup("§l§aPlop!");
+                $player->sendPopup("Β§lΒ§aPlop!");
             }
             //CookieHat
             if ($item->getId() == 357) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::COOKIE));
-                $player->sendPopup("§l§aPlop!");
+                $player->sendPopup("Β§lΒ§aPlop!");
             }
             //PaperHat
             if ($item->getId() == 339) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::PAPER));
-                $player->sendPopup("§l§aPlop!");
+                $player->sendPopup("Β§lΒ§aPlop!");
             }
             //BucketHat
             if ($item->getId() == 325) {
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::BUCKET));
-                $player->sendPopup("§l§aPlop!");
+                $player->sendPopup("Β§lΒ§aPlop!");
             }
             //Partical
             if ($item->getid() == 348) {
@@ -345,111 +345,111 @@ class Main extends PluginBase implements Listener {
         $p = $e->getPlayer();
         //ItemNames
         if ($i->getId() == 347) {
-            $p->sendPopup("§l§dCosmetic§eMenu");
+            $p->sendPopup("Β§lΒ§dCosmeticΒ§eMenu");
         }
         //Gadgets
         if ($i->getId() == 328) {
-            $p->sendPopup("§l§6Gadgets");
+            $p->sendPopup("Β§lΒ§6Gadgets");
         }
         //EggLauncher
         if ($i->getId() == 329) {
-            $p->sendPopup("§l§6Egg§bLauncher");
+            $p->sendPopup("Β§lΒ§6EggΒ§bLauncher");
         }
         //EnderPearl
         if ($i->getId() == 332) {
-            $p->sendPopup("§l§dEnderPearl");
+            $p->sendPopup("Β§lΒ§dEnderPearl");
         }
         //BunnyHop
         if ($i->getId() == 258) {
-            $p->sendPopup("§l§bBunnyHop");
+            $p->sendPopup("Β§lΒ§bBunnyHop");
         }
         //FlyTime
         if ($i->getId() == 288) {
-            $p->sendPopup("§l§6FlyTime");
+            $p->sendPopup("Β§lΒ§6FlyTime");
         }
         //ParticleBomb
         if ($i->getId() == 341) {
-            $p->sendPopup("§l§dParticle§eBomb");
+            $p->sendPopup("Β§lΒ§dParticleΒ§eBomb");
         }
         //Armours
         if ($i->getId() == 310) {
-            $p->sendPopup("§l§dArmours");
+            $p->sendPopup("Β§lΒ§dArmours");
         }
         //LightningStick
         if ($i->getId() == 352) {
-            $p->sendPopup("§l§6Lighting§aStick");
+            $p->sendPopup("Β§lΒ§6LightingΒ§aStick");
         }
         //Partical
         if ($i->getId() == 348) {
-            $p->sendPopup("§l§bParticals");
+            $p->sendPopup("Β§lΒ§bParticals");
         }
         //Water
         if ($i->getId() == 351 && $i->getDamage() == 4) {
-            $p->sendPopup("§l§6Water");
+            $p->sendPopup("Β§lΒ§6Water");
         }
         //Fire
         if ($i->getId() == 351 && $i->getDamage() == 14) {
-            $p->sendPopup("§l§6Fire");
+            $p->sendPopup("Β§lΒ§6Fire");
         }
         //Hearts
         if ($i->getId() == 351 && $i->getDamage() == 1) {
-            $p->sendPopup("§l§6Hearts");
+            $p->sendPopup("Β§lΒ§6Hearts");
         }
         //Smoke
         if ($i->getId() == 351 && $i->getDamage() == 15) {
-            $p->sendPopup("§l§6Smoke");
+            $p->sendPopup("Β§lΒ§6Smoke");
         }
         //Back
         if ($i->getId() == 355) {
-            $p->sendPopup("§l§7Back...");
+            $p->sendPopup("Β§lΒ§7Back...");
         }
         //TNTLauncher
         if ($i->getId() == 352) {
-            $p->sendPopup("§l§cTNT§aLauncher");
+            $p->sendPopup("Β§lΒ§cTNTΒ§aLauncher");
         }
         //Diamond Armour
         if ($i->getId() == 264) {
-            $p->sendPopup("§l§bDiamond §dAmour");
+            $p->sendPopup("Β§lΒ§bDiamond Β§dAmour");
         }
         //Iron Armour
         if ($i->getId() == 265) {
-            $p->sendPopup("§l§fIron §dAmour");
+            $p->sendPopup("Β§lΒ§fIron Β§dAmour");
         }
         //Chain Armour
         if ($i->getId() == 289) {
-            $p->sendPopup("§l§7Chain §dAmour");
+            $p->sendPopup("Β§lΒ§7Chain Β§dAmour");
         }
         //Gold Armour
         if ($i->getId() == 266) {
-            $p->sendPopup("§l§6Gold §dAmour");
+            $p->sendPopup("Β§lΒ§6Gold Β§dAmour");
         }
         //Leather Armour
         if ($i->getId() == 334) {
-            $p->sendPopup("§l§4Leather §dAmour");
+            $p->sendPopup("Β§lΒ§4Leather Β§dAmour");
         }
         //SeedsHat
         if ($i->getId() == 295) {
-            $p->sendPopup("§l§3Seeds §eHat");
+            $p->sendPopup("Β§lΒ§3Seeds Β§eHat");
         }
         //SteakHat
         if ($i->getId() == 364) {
-            $p->sendPopup("§l§4Steak §eHat");
+            $p->sendPopup("Β§lΒ§4Steak Β§eHat");
         }
         //CookieHat
         if ($i->getId() == 357) {
-            $p->sendPopup("§l§6Cookie §eHat");
+            $p->sendPopup("Β§lΒ§6Cookie Β§eHat");
         }
         //PaperHat
         if ($i->getId() == 339) {
-            $p->sendPopup("§l§fPaper §eHat");
+            $p->sendPopup("Β§lΒ§fPaper Β§eHat");
         }
         //BucketHat
         if ($i->getId() == 325) {
-            $p->sendPopup("§l§7Bucket §eHat");
+            $p->sendPopup("Β§lΒ§7Bucket Β§eHat");
         }
         //Hats
         if ($i->getId() == 321) {
-            $p->sendPopup("§l§eHat");
+            $p->sendPopup("Β§lΒ§eHat");
         }
     }
 
