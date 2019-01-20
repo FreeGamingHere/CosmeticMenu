@@ -59,7 +59,7 @@ class Main extends PluginBase implements Listener {
         $inv->setItem(0, $item);
     }
     public function playerSpawnEvent(PlayerRespawnEvent $ev) {
-        $item = new Item(345, 1, 1);
+        $item = new Item(345, 0, 1);
         $ev->getPlayer()->getInventory()->addItem($item);
     }
     public function onInteract(PlayerInteractEvent $event) {
@@ -359,7 +359,7 @@ class Main extends PluginBase implements Listener {
                 $player->getInventory()->removeItem(Item::get(ITEM::DYE, 1, 1));
                 $player->getInventory()->removeItem(Item::get(ITEM::DYE, 14, 1));
                 $player->getInventory()->removeItem(Item::get(ITEM::BONE));
-                $player->getInventory()->addItem(Item::get(ITEM::CLOCK));
+                $player->getInventory()->addItem(Item::get(ITEM::COMPASS));
                 $player->getArmorInventory()->setHelmet(Item::get(ITEM::AIR));
                 $player->getArmorInventory()->setChestplate(Item::get(ITEM::AIR));
                 $player->getArmorInventory()->setLeggings(Item::get(ITEM::AIR));
