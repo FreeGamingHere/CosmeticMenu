@@ -55,11 +55,11 @@ class Main extends PluginBase implements Listener {
         $player = $event->getPlayer();
         $inv = $player->getInventory();
         $inv->clearAll();
-        $item = Item::get(347, 0, 1);
+        $item = Item::get(345, 0, 1);
         $inv->setItem(0, $item);
     }
     public function playerSpawnEvent(PlayerRespawnEvent $ev) {
-        $item = new Item(347, 1, 1);
+        $item = new Item(345, 1, 1);
         $ev->getPlayer()->getInventory()->addItem($item);
     }
     public function onInteract(PlayerInteractEvent $event) {
@@ -184,31 +184,31 @@ class Main extends PluginBase implements Listener {
                 }
             }
             //Items
-            if ($item->getId() == 347) {
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
+            if ($item->getId() == 345) {
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
                 $player->getInventory()->addItem(Item::get(ITEM::MINECART));
                 $player->getInventory()->addItem(Item::get(ITEM::PAINTING));
                 $player->getInventory()->addItem(Item::get(ITEM::GLOWSTONE_DUST));
-                $player->getInventory()->addItem(Item::get(ITEM::DIAMOND_HELMET));
+                $player->getInventory()->addItem(Item::get(ITEM::BRICK));
             }
             //Armours
-            if ($item->getId() == 310) {
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_HELMET));
+            if ($item->getId() == 336) {
+                $player->getInventory()->removeItem(Item::get(ITEM::BRICK));
                 $player->getInventory()->removeItem(Item::get(ITEM::MINECART));
                 $player->getInventory()->removeItem(Item::get(ITEM::PAINTING));
                 $player->getInventory()->removeItem(Item::get(ITEM::GLOWSTONE_DUST));
-                $player->getInventory()->addItem(Item::get(ITEM::DIAMOND));
-                $player->getInventory()->addItem(Item::get(ITEM::IRON_INGOT));
+                $player->getInventory()->addItem(Item::get(ITEM::DIAMOND_BLOCK));
+                $player->getInventory()->addItem(Item::get(ITEM::IRON_BLOCK));
                 $player->getInventory()->addItem(Item::get(ITEM::GUNPOWDER));
-                $player->getInventory()->addItem(Item::get(ITEM::GOLD_INGOT));
+                $player->getInventory()->addItem(Item::get(ITEM::GOLD_BLOCK));
                 $player->getInventory()->addItem(Item::get(ITEM::LEATHER));
             }
             //Diamond Armour
-            if ($item->getid() == 264) {
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND));
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
-                $player->getInventory()->removeItem(Item::get(ITEM::IRON_INGOT));
-                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_INGOT));
+            if ($item->getid() == 57) {
+                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
+                $player->getInventory()->removeItem(Item::get(ITEM::IRON_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_BLOCK));
                 $player->getInventory()->removeItem(Item::get(ITEM::GUNPOWDER));
                 $player->getInventory()->removeItem(Item::get(ITEM::LEATHER));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
@@ -218,11 +218,11 @@ class Main extends PluginBase implements Listener {
                 $player->getArmorInventory()->setBoots(Item::get(ITEM::DIAMOND_BOOTS));
             }
             //Iron Armour
-            if ($item->getid() == 265) {
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND));
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
-                $player->getInventory()->removeItem(Item::get(ITEM::IRON_INGOT));
-                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_INGOT));
+            if ($item->getid() == 42) {
+                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
+                $player->getInventory()->removeItem(Item::get(ITEM::IRON_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_BLOCK));
                 $player->getInventory()->removeItem(Item::get(ITEM::GUNPOWDER));
                 $player->getInventory()->removeItem(Item::get(ITEM::LEATHER));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
@@ -232,11 +232,11 @@ class Main extends PluginBase implements Listener {
                 $player->getArmorInventory()->setBoots(Item::get(ITEM::IRON_BOOTS));
             }
             //Gold Armour
-            if ($item->getid() == 266) {
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND));
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
-                $player->getInventory()->removeItem(Item::get(ITEM::IRON_INGOT));
-                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_INGOT));
+            if ($item->getid() == 41) {
+                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
+                $player->getInventory()->removeItem(Item::get(ITEM::IRON_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_BLOCK));
                 $player->getInventory()->removeItem(Item::get(ITEM::GUNPOWDER));
                 $player->getInventory()->removeItem(Item::get(ITEM::LEATHER));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
@@ -247,10 +247,10 @@ class Main extends PluginBase implements Listener {
             }
             //Chain Armour
             if ($item->getid() == 289) {
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND));
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
-                $player->getInventory()->removeItem(Item::get(ITEM::IRON_INGOT));
-                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_INGOT));
+                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
+                $player->getInventory()->removeItem(Item::get(ITEM::IRON_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_BLOCK));
                 $player->getInventory()->removeItem(Item::get(ITEM::GUNPOWDER));
                 $player->getInventory()->removeItem(Item::get(ITEM::LEATHER));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
@@ -261,10 +261,10 @@ class Main extends PluginBase implements Listener {
             }
             //Leather Armour
             if ($item->getid() == 334) {
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND));
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
-                $player->getInventory()->removeItem(Item::get(ITEM::IRON_INGOT));
-                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_INGOT));
+                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
+                $player->getInventory()->removeItem(Item::get(ITEM::IRON_BLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::GOLD_BLOCK));
                 $player->getInventory()->removeItem(Item::get(ITEM::GUNPOWDER));
                 $player->getInventory()->removeItem(Item::get(ITEM::LEATHER));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
@@ -275,11 +275,11 @@ class Main extends PluginBase implements Listener {
             }
             //Gadgets
             if ($item->getid() == 328) {
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
                 $player->getInventory()->removeItem(Item::get(ITEM::MINECART));
                 $player->getInventory()->removeItem(Item::get(ITEM::PAINTING));
                 $player->getInventory()->removeItem(Item::get(ITEM::GLOWSTONE_DUST));
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_HELMET));
+                $player->getInventory()->removeItem(Item::get(ITEM::BRICK));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
                 $player->getInventory()->addItem(Item::get(ITEM::SADDLE));
                 $player->getInventory()->addItem(Item::get(ITEM::SLIMEBALL));
@@ -289,11 +289,11 @@ class Main extends PluginBase implements Listener {
             }
             //Hats
             if ($item->getid() == 321) {
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
                 $player->getInventory()->removeItem(Item::get(ITEM::MINECART));
                 $player->getInventory()->removeItem(Item::get(ITEM::PAINTING));
                 $player->getInventory()->removeItem(Item::get(ITEM::GLOWSTONE_DUST));
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_HELMET));
+                $player->getInventory()->removeItem(Item::get(ITEM::BRICK));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
                 $player->getInventory()->addItem(Item::get(ITEM::SEEDS));
                 $player->getInventory()->addItem(Item::get(ITEM::STEAK));
@@ -328,11 +328,11 @@ class Main extends PluginBase implements Listener {
             }
             //Particle
             if ($item->getid() == 348) {
-                $player->getInventory()->removeItem(Item::get(ITEM::CLOCK));
+                $player->getInventory()->removeItem(Item::get(ITEM::COMPASS));
                 $player->getInventory()->removeItem(Item::get(ITEM::MINECART));
                 $player->getInventory()->removeItem(Item::get(ITEM::PAINTING));
                 $player->getInventory()->removeItem(Item::get(ITEM::GLOWSTONE_DUST));
-                $player->getInventory()->removeItem(Item::get(ITEM::DIAMOND_HELMET));
+                $player->getInventory()->removeItem(Item::get(ITEM::BRICK));
                 $player->getInventory()->addItem(Item::get(ITEM::BED));
                 $player->getInventory()->addItem(Item::get(ITEM::DYE, 4, 1));
                 $player->getInventory()->addItem(Item::get(ITEM::DYE, 14, 1));
@@ -371,7 +371,7 @@ class Main extends PluginBase implements Listener {
         $i = $e->getItem();
         $p = $e->getPlayer();
         //ItemNames
-        if ($i->getId() == 347) {
+        if ($i->getId() == 345) {
             $p->sendPopup("§l§dCosmetic§eMenu");
         }
         //Gadgets
@@ -399,7 +399,7 @@ class Main extends PluginBase implements Listener {
             $p->sendPopup("§l§dParticle§eBomb");
         }
         //Armors
-        if ($i->getId() == 310) {
+        if ($i->getId() == 336) {
             $p->sendPopup("§l§dArmors");
         }
         //LightningStick
@@ -435,11 +435,11 @@ class Main extends PluginBase implements Listener {
             $p->sendPopup("§l§cTNT§aLauncher");
         }
         //Diamond Armor
-        if ($i->getId() == 264) {
+        if ($i->getId() == 57) {
             $p->sendPopup("§l§bDiamond §dArmor");
         }
         //Iron Armor
-        if ($i->getId() == 265) {
+        if ($i->getId() == 42) {
             $p->sendPopup("§l§fIron §dArmor");
         }
         //Chain Armor
@@ -447,7 +447,7 @@ class Main extends PluginBase implements Listener {
             $p->sendPopup("§l§7Chain §dArmor");
         }
         //Gold Armor
-        if ($i->getId() == 266) {
+        if ($i->getId() == 41) {
             $p->sendPopup("§l§6Gold §dArmor");
         }
         //Leather Armor
